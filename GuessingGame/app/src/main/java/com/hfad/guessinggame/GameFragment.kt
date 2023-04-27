@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.hfad.guessinggame.databinding.FragmentGameBinding
@@ -26,18 +27,30 @@ class GameFragment : Fragment() {
         // set the viewModel property
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-        updateScreen()
+        // use live data to update values on screen
+        viewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer { newValue ->
+            binding.incorrectGuesses.text = "Incorrect guesses: $newValue"
+        })
 
-        binding.guessButton.setOnClickListener {
-            viewModel.makeGuess(binding.guess.text.toString().uppercase())
-            binding.guess.text = null
-            updateScreen()
+        viewModel.livesLeft.observe(viewLifecycleOwner) { newValue ->
+            binding.lives.text = "You have $newValue lives left"
+        }
 
-            if (viewModel.isWon() || viewModel.isLost()) {
+        viewModel.secretWordDisplay.observe(viewLifecycleOwner) { newValue ->
+            binding.word.text = newValue
+        }
+
+        viewModel.gameOver.observe(viewLifecycleOwner) { newValue ->
+            if (newValue) {
                 val action = GameFragmentDirections
                     .actionGameFragmentToResultFragment(viewModel.wonLostMessage())
                 view.findNavController().navigate(action)
             }
+        }
+
+        binding.guessButton.setOnClickListener {
+            viewModel.makeGuess(binding.guess.text.toString().uppercase())
+            binding.guess.text = null
         }
 
         return view
@@ -62,12 +75,6 @@ class GameFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         Log.i("ViewModel", "GF onDestroyView")
-    }
-
-    fun updateScreen() {
-        binding.word.text = viewModel.secretWordDisplay
-        binding.lives.text = "You have ${viewModel.livesLeft} lives left."
-        binding.incorrectGuesses.text = "Incorrect guesses: ${viewModel.incorrectGuesses}"
     }
 
 }
