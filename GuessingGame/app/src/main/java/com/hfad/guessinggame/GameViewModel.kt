@@ -71,6 +71,10 @@ class GameViewModel : ViewModel() {
         return message
     }
 
+    fun finishGame() {
+        _gameOver.value = true
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.i("ViewModel", "GameViewModel cleared")

@@ -27,18 +27,8 @@ class GameFragment : Fragment() {
         // set the viewModel property
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-        // use live data to update values on screen
-        viewModel.incorrectGuesses.observe(viewLifecycleOwner, Observer { newValue ->
-            binding.incorrectGuesses.text = "Incorrect guesses: $newValue"
-        })
-
-        viewModel.livesLeft.observe(viewLifecycleOwner) { newValue ->
-            binding.lives.text = "You have $newValue lives left"
-        }
-
-        viewModel.secretWordDisplay.observe(viewLifecycleOwner) { newValue ->
-            binding.word.text = newValue
-        }
+        binding.gameViewModel = viewModel // set the data binding variable
+        binding.lifecycleOwner = viewLifecycleOwner // lets the layout respond to live data updates
 
         viewModel.gameOver.observe(viewLifecycleOwner) { newValue ->
             if (newValue) {

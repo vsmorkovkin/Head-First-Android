@@ -30,7 +30,7 @@ class ResultFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory)
                                         .get(ResultViewModel::class.java)
 
-        binding.wonLost.text = viewModel.result
+        binding.resultViewModel = viewModel // set the layout's data binding variable
 
         binding.newGameButton.setOnClickListener {
             view.findNavController()
