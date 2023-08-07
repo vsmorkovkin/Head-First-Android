@@ -10,6 +10,8 @@ class TaskViewModel(val dao: TaskDao) : ViewModel() {
 
     fun addTask() {
         viewModelScope.launch {
+            if (newTaskName.value!!.isEmpty()) return@launch
+
             val task = Task()
             task.taskName = newTaskName.value!!
             dao.insert(task)
