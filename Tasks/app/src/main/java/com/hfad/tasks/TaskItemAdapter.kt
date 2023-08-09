@@ -8,8 +8,9 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hfad.tasks.databinding.TaskItemBinding
+import com.hfad.tasks.generated.callback.OnClickListener
 
-class TaskItemAdapter
+class TaskItemAdapter(val clickListener: (taskId: Long) -> Unit)
     : ListAdapter<Task, TaskItemAdapter.TaskItemViewHolder>(TaskDiffItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
@@ -17,7 +18,7 @@ class TaskItemAdapter
 
     override fun onBindViewHolder(holder: TaskItemViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, clickListener)
     }
 
     class TaskItemViewHolder(val binding: TaskItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -30,8 +31,9 @@ class TaskItemAdapter
             }
         }
 
-        fun bind(item: Task) {
+        fun bind(item: Task, clickListener: (taskId: Long) -> Unit) {
             binding.task = item
+            binding.root.setOnClickListener { clickListener(item.taskId) }
         }
     }
 }
