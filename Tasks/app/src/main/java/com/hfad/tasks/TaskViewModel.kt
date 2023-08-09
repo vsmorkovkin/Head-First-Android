@@ -8,6 +8,10 @@ class TaskViewModel(val dao: TaskDao) : ViewModel() {
 
     val tasks = dao.getAll()
 
+    private val _navigateToTask = MutableLiveData<Long?>()
+    val navigateToTask: LiveData<Long?>
+        get() = _navigateToTask
+
     fun addTask() {
         viewModelScope.launch {
             if (newTaskName.value!!.isEmpty()) return@launch
@@ -16,6 +20,14 @@ class TaskViewModel(val dao: TaskDao) : ViewModel() {
             task.taskName = newTaskName.value!!
             dao.insert(task)
         }
+    }
+
+    fun onTaskClicked(taskId: Long) {
+        _navigateToTask.value = taskId
+    }
+
+    fun onTaskNavigated() {
+        _navigateToTask.value = null
     }
 
 }
